@@ -17,7 +17,7 @@ const App = () => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <ConnectWallet />
-        <TotalSupply />
+        <IsConnected />
         <TotalBalance />
       </QueryClientProvider>
     </WagmiProvider>
@@ -50,6 +50,7 @@ function TotalSupply() {
 }
 
 function TotalBalance() {
+  const { address } = useAccount();
   const { data, isLoading, error } = useReadContract({
     address: "0xdac17f958d2ee523a2206206994597c13d831ec7",
     abi: [
@@ -74,8 +75,20 @@ function TotalBalance() {
       },
     ],
     functionName: "balanceOf",
-    args: ["0xC22205411Ab99FaA100252163B24205a76fe8d66"],
+    args: [address?.toString()],
   });
+
+  if(!address) {
+    return (
+      <div>Cant get Balance</div>
+    )
+  }
+
+  if(isLoading) {
+    return (
+      <div>Loading...</div>
+    )
+  }
 
   return <div>Balance - {JSON.stringify(data?.toString())}</div>;
 }
@@ -88,7 +101,6 @@ function ConnectWallet() {
   if (address) {
     return (
       <div>
-        You are connected to {address}
         <div>
           <button onClick={() => disconnect()}>Disconnect</button>
         </div>
@@ -101,6 +113,19 @@ function ConnectWallet() {
       Connect Via {connector.name}
     </button>
   ));
+}
+
+function IsConnected() {
+  const { address } = useAccount();
+
+  if(address) {
+    return(
+      <div>You are Connected with : {address}</div>
+    )
+  }
+  return (
+    <div>You are not Connected</div>
+  )
 }
 
 export default App;
