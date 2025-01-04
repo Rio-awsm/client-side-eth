@@ -9,6 +9,7 @@ import {
 } from "wagmi";
 import { config } from "./config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AllowUSDT } from "./AllowUSDT";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => {
         <ConnectWallet />
         <IsConnected />
         <TotalBalance />
+        <AllowUSDT />
       </QueryClientProvider>
     </WagmiProvider>
   );
@@ -78,16 +80,12 @@ function TotalBalance() {
     args: [address?.toString()],
   });
 
-  if(!address) {
-    return (
-      <div>Cant get Balance</div>
-    )
+  if (!address) {
+    return <div>Cant get Balance</div>;
   }
 
-  if(isLoading) {
-    return (
-      <div>Loading...</div>
-    )
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return <div>Balance - {JSON.stringify(data?.toString())}</div>;
@@ -118,14 +116,10 @@ function ConnectWallet() {
 function IsConnected() {
   const { address } = useAccount();
 
-  if(address) {
-    return(
-      <div>You are Connected with : {address}</div>
-    )
+  if (address) {
+    return <div>You are Connected with : {address}</div>;
   }
-  return (
-    <div>You are not Connected</div>
-  )
+  return <div>You are not Connected</div>;
 }
 
 export default App;
